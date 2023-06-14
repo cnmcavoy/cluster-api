@@ -584,6 +584,7 @@ func (r *Reconciler) drainNode(ctx context.Context, cluster *clusterv1.Cluster, 
 		log.Error(err, "Error creating a remote client while deleting Machine, won't retry")
 		return ctrl.Result{}, nil
 	}
+	log.Info(fmt.Sprintf("Draining node with HTTP timeout: %v", restConfig.Timeout))
 	kubeClient, err := kubernetes.NewForConfig(restConfig)
 	if err != nil {
 		log.Error(err, "Error creating a remote client while deleting Machine, won't retry")

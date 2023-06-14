@@ -190,6 +190,8 @@ func InitFlags(fs *pflag.FlagSet) {
 	fs.DurationVar(&syncPeriod, "sync-period", 10*time.Minute,
 		"The minimum interval at which watched resources are reconciled (e.g. 15m)")
 
+	remote.AddRestConfigFlags(fs)
+
 	fs.IntVar(&webhookPort, "webhook-port", 9443,
 		"Webhook Server port")
 
@@ -230,7 +232,7 @@ func main() {
 		}()
 	}
 
-	restConfig := ctrl.GetConfigOrDie()
+	restConfig := remote.DefaultRestConfig()
 	restConfig.UserAgent = remote.DefaultClusterAPIUserAgent("cluster-api-controller-manager")
 
 	minVer := version.MinimumKubernetesVersion
