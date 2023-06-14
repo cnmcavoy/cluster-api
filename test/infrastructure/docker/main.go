@@ -98,6 +98,9 @@ func initFlags(fs *pflag.FlagSet) {
 		"Bind address to expose the pprof profiler (e.g. localhost:6060)")
 	fs.DurationVar(&syncPeriod, "sync-period", 10*time.Minute,
 		"The minimum interval at which watched resources are reconciled (e.g. 15m)")
+
+	remote.AddRestConfigFlags(fs)
+	
 	fs.StringVar(&healthAddr, "health-addr", ":9440",
 		"The address the health endpoint binds to.")
 	fs.IntVar(&webhookPort, "webhook-port", 9443,
@@ -138,7 +141,7 @@ func main() {
 		}()
 	}
 
-	restConfig := ctrl.GetConfigOrDie()
+	restConfig := remote.DefaultRestConfig()
 	restConfig.UserAgent = remote.DefaultClusterAPIUserAgent("cluster-api-docker-controller-manager")
 	mgr, err := ctrl.NewManager(restConfig, ctrl.Options{
 		Scheme:                     myscheme,
