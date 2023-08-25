@@ -1062,6 +1062,11 @@ func (r *Reconciler) reconcileUnhealthyMachines(ctx context.Context, cluster *cl
 		if conditions.IsFalse(m, clusterv1.MachineOwnerRemediatedCondition) {
 			machinesToRemediate = append(machinesToRemediate, m)
 		}
+		// The MarkedForDeleteMachineAnnotation annotation may be set by external sources, such as Cluster Autoscaler
+		if _, ok := m.ObjectMeta.Annotations[clusterv1.MarkedForDeleteMachineAnnotation]; ok {
+			log.Info("Deleting machine because it's marked for deletion by annotation (%v): %v", clusterv1.MarkedForDeleteMachineAnnotation, m.Name)
+			machinesToRemediate = append(machinesToRemediate, m)
+		}
 	}
 
 	// If there are no machines to remediate return early.
