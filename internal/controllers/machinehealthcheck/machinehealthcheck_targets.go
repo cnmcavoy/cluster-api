@@ -280,13 +280,13 @@ func (r *Reconciler) getNodeFromMachine(ctx context.Context, clusterClient clien
 
 // healthCheckTargets health checks a slice of targets
 // and gives a data to measure the average health.
-func (r *Reconciler) healthCheckTargets(targets []healthCheckTarget, logger logr.Logger, timeoutForMachineToHaveNode metav1.Duration) ([]healthCheckTarget, []healthCheckTarget, []time.Duration) {
+func (r *Reconciler) healthCheckTargets(targets []healthCheckTarget, l logr.Logger, timeoutForMachineToHaveNode metav1.Duration) ([]healthCheckTarget, []healthCheckTarget, []time.Duration) {
 	var nextCheckTimes []time.Duration
 	var unhealthy []healthCheckTarget
 	var healthy []healthCheckTarget
 
 	for _, t := range targets {
-		logger = logger.WithValues("Target", t.string())
+		logger := l.WithValues("Target", t.string())
 		logger.V(3).Info("Health checking target")
 		needsRemediation, nextCheck := t.needsRemediation(logger, timeoutForMachineToHaveNode)
 
